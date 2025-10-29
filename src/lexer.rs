@@ -13,7 +13,7 @@ fn is_word_char(c: char) -> bool {
 }
 
 fn is_punctation_character(c: char) -> bool {
-    (c == '{') || (c == '}') || (c == ':')
+    (c == '{') || (c == '}') || (c == ':') || (c == '*')
 }
 
 

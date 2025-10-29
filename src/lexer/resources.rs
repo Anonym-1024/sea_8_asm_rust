@@ -63,7 +63,7 @@ pub static MACRO_NAMES: [&'static str; 2] = [
 ];
 
 pub static DIRECTIVE_NAMES: [&'static str; 6] = [
-    ".def",
+    ".res",
 	".byte",
 	".bytes",
 	".arr",

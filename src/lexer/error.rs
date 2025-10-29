@@ -1,6 +1,6 @@
-use std::fmt::format;
 
-#[derive(Debug)]
+
+
 pub enum LexerErrorKind {
     UnknownSymbol(char),
     InvalidMacro(String),

@@ -1,0 +1,24 @@
+file = statements, EOF;
+statements = { statement };
+statement =  main_directive | short_label_directive | def_directive | instruction | macro;
+
+main_directive = ".start", ":", "\n";
+short_label_directive = TOKEN_IDENTIFIER, ":", "\n";
+type_directive = byte_directive | bytes_directive | arr_directive | label_directive;
+byte_directive = ".byte";
+bytes_directive = ".bytes", TOKEN_NUMBER;
+arr_directive = ".arr", TOKEN_NUMBER, type_directive;
+label_directive = ".label";
+literal = TOKEN_NUMBER | TOKEN_STRING;
+literals = { literal };
+assignment = "{", literals, "}";
+def_directive = ".def", TOKEN_IDENTIFIER, type_directive, [ assignment ], "\n";
+
+instruction_argument = TOKEN_REGISTER | TOKEN_PORT | TOKEN_SYSTEM_REGISTER | literal | TOKEN_IDENTIFIER;
+instruction_arguments = { argument };
+condition_code = ":", TOKEN_CONDITION_CODE;
+instruction = TOKEN_INSTRUCTION, [ condition_code ], arguments, "\n";
+
+macro_argument = ;
+macro_arguments = ;
+macro = TOKEN_MACRO, [ condition_code ], arguments, "\n";

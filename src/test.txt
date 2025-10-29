@@ -1,3 +1,0 @@
-.def str .bytes #4 { "all" #0 }
-
-
