@@ -13,7 +13,7 @@ fn is_word_char(c: char) -> bool {
 }
 
 fn is_punctation_character(c: char) -> bool {
-    (c == '{') || (c == '}') || (c == ':') || (c == '*')
+    (c == '{') || (c == '}') || (c == ':') || (c == '*') || (c == '~')
 }
 
 
@@ -28,17 +28,17 @@ fn drop_comment(chars: &[char], index: &mut usize) {
 
 fn get_word_token_kind(lexeme: &str) -> TokenKind {
     if resources::INSTRUCTION_NAMES.contains(&lexeme) {
-        TokenKind::TokenInstruction
+        TokenKind::Instruction
     } else if resources::REGISTER_NAMES.contains(&lexeme) {
-        TokenKind::TokenRegister
+        TokenKind::Register
     } else if resources::SYSTEM_REGISTER_NAMES.contains(&lexeme) {
-        TokenKind::TokenSystemRegister
+        TokenKind::SystemRegister
     } else if resources::PORT_NAMES.contains(&lexeme) {
-        TokenKind::TokenPort
+        TokenKind::Port
     } else if resources::CONDITION_CODE_NAMES.contains(&lexeme) {
-        TokenKind::TokenConditionCode
+        TokenKind::ConditionCode
     } else {
-        TokenKind::TokenIdentifier
+        TokenKind::Identifier
     }
 }
 
@@ -87,7 +87,7 @@ fn make_macro_token(chars: &[char], index: &mut usize, line: i32) -> Result<Toke
     }
 
     if is_macro_name(&lexeme) {
-        Ok(Token::new(TokenKind::TokenMacro, lexeme, line))
+        Ok(Token::new(TokenKind::Macro, lexeme, line))
     } else {
         Err(LexerError::new(error::LexerErrorKind::InvalidMacro(lexeme), line))
     }
@@ -110,7 +110,7 @@ fn make_directive_token(chars: &[char], index: &mut usize, line: i32) -> Result<
     }
 
     if is_directive_name(&lexeme) {
-        Ok(Token::new(TokenKind::TokenDirective, lexeme, line))
+        Ok(Token::new(TokenKind::Directive, lexeme, line))
     } else {
         Err(LexerError::new(error::LexerErrorKind::InvalidDirective(lexeme), line))
     }
@@ -161,7 +161,7 @@ fn make_number_lit_token(chars: &[char], index: &mut usize, line: i32) -> Result
         return Err(LexerError::new(error::LexerErrorKind::InvalidNumberLit(lexeme), line));
     }
 
-    Ok(Token::new(TokenKind::TokenNumber, lexeme, line))
+    Ok(Token::new(TokenKind::Number, lexeme, line))
 }
 
 
@@ -194,14 +194,11 @@ fn make_string_lit_token(chars: &[char], index: &mut usize, line: i32) -> Result
     *index += 1;
 
 
-    Ok(Token::new(TokenKind::TokenString, lexeme, line))
+    Ok(Token::new(TokenKind::String, lexeme, line))
 }
 
 
-fn make_punctuation_token(chars: &[char], index: &mut usize, line: i32) -> Token {
-    *index += 1;
-    Token::new(TokenKind::TokenPunctuation, String::from(chars[*index - 1]), line)
-}
+
 
 pub fn tokenise(src: String) -> Result<Vec<Token>, LexerError> {
 
@@ -240,6 +237,7 @@ pub fn tokenise(src: String) -> Result<Vec<Token>, LexerError> {
             tokens.push(new_string_token);
 
         } else if char == '\n' { 
+            tokens.push(Token::new(TokenKind::Punctuation, String::from("\n"), line));
             index += 1;
             line += 1;
 
@@ -247,8 +245,8 @@ pub fn tokenise(src: String) -> Result<Vec<Token>, LexerError> {
             index += 1;
 
         } else if is_punctation_character(char) {
-            let new_punctuation_token = make_punctuation_token(&chars, &mut index, line);
-            tokens.push(new_punctuation_token);
+            tokens.push(Token::new(TokenKind::Punctuation, String::from(chars[index]), line));
+            index += 1;
         } else {
             return Err(LexerError::new(error::LexerErrorKind::UnknownSymbol(chars[index]), line));
         }

@@ -1,24 +1,28 @@
 
 #[derive(Debug)]
+#[derive(PartialEq, Eq)]
+#[derive(Clone, Copy)]
 pub enum TokenKind {
-    TokenInstruction,
-    TokenMacro,
-    TokenDirective,
-    TokenRegister,
-    TokenPort,
-    TokenSystemRegister,
-    TokenConditionCode,
-    TokenIdentifier,
-    TokenNumber,
-    TokenString,
-    TokenPunctuation,
-    TokenEof
+    Instruction,
+    Macro,
+    Directive,
+    Register,
+    Port,
+    SystemRegister,
+    ConditionCode,
+    Identifier,
+    Number,
+    String,
+    Punctuation,
+    Eof
 }
 
+#[derive(Clone)]
+#[derive(Debug)]
 pub struct Token {
-    kind: TokenKind,
-    lexeme: String,
-    line: i32,
+    pub kind: TokenKind,
+    pub lexeme: String,
+    pub line: i32,
 }
 
 impl Token {
@@ -27,7 +31,7 @@ impl Token {
     }
 
     pub fn eof_token(line: i32) -> Self {
-        Self { kind: TokenKind::TokenEof, lexeme: String::new(), line }
+        Self { kind: TokenKind::Eof, lexeme: String::new(), line }
     }
 }
 
@@ -36,3 +40,5 @@ impl std::fmt::Display for Token {
         write!(f, "line: {}, type: {:?}, lexeme: {}", self.line, self.kind, self.lexeme)
     }
 }
+
+

@@ -1,4 +1,4 @@
-pub static INSTRUCTION_NAMES: [&'static str; 56] = [
+pub static INSTRUCTION_NAMES: [&str; 56] = [
     "mov",
 	"movs",
 	"mvn",
@@ -57,12 +57,13 @@ pub static INSTRUCTION_NAMES: [&'static str; 56] = [
 	"svc"
 ];
 
-pub static MACRO_NAMES: [&'static str; 2] = [
+pub static MACRO_NAMES: [&str; 3] = [
     "!mov",
-	"!b"
+	"!b",
+	"!bl",
 ];
 
-pub static DIRECTIVE_NAMES: [&'static str; 6] = [
+pub static DIRECTIVE_NAMES: [&str; 6] = [
     ".res",
 	".byte",
 	".bytes",
@@ -71,7 +72,7 @@ pub static DIRECTIVE_NAMES: [&'static str; 6] = [
 	".start"
 ];
 
-pub static REGISTER_NAMES: [&'static str; 16] = [
+pub static REGISTER_NAMES: [&str; 16] = [
     "r0",
 	"r1",
 	"r2",
@@ -90,7 +91,7 @@ pub static REGISTER_NAMES: [&'static str; 16] = [
 	"r15"
 ];
 
-pub static PORT_NAMES: [&'static str; 8] = [
+pub static PORT_NAMES: [&str; 8] = [
     "p0",
 	"p1",
 	"p2",
@@ -101,7 +102,7 @@ pub static PORT_NAMES: [&'static str; 8] = [
 	"p7"
 ];
 
-pub static SYSTEM_REGISTER_NAMES: [&'static str; 6] = [
+pub static SYSTEM_REGISTER_NAMES: [&str; 6] = [
     "pc_b0",
 	"pc_b1",
 	"pdbr_b0",
@@ -110,7 +111,7 @@ pub static SYSTEM_REGISTER_NAMES: [&'static str; 6] = [
 	"intr"
 ];
 
-pub static CONDITION_CODE_NAMES: [&'static str; 19] = [
+pub static CONDITION_CODE_NAMES: [&str; 19] = [
     "al",
 	"eq",
 	"zs",

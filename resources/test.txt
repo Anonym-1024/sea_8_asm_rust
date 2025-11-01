@@ -1,0 +1,14 @@
+.res ahoj .arr #4 .arr #5 .byte { "ahojky" #4 ne }*#4
+
+start:
+hh:
+    mov:ses r4 r5       ;shaiou
+    !mov:ne ahoj r4 #4 ;nudnd
+    add r5 r6 r7    ;dhuhuisa
+    !b loop
+
+    ldr r0 r5~
+
+loop: 
+
+    mov 

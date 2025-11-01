@@ -1,24 +1,30 @@
-file = statements, EOF;
+file = statements, ?Eof?;
+
 statements = { statement };
-statement =  main_directive | short_label_directive | def_directive | instruction | macro;
+statement = ( res_directive | start_directive | label_directive | instruction | macro ), "\n";
 
-main_directive = ".start", ":", "\n";
-short_label_directive = TOKEN_IDENTIFIER, ":", "\n";
-type_directive = byte_directive | bytes_directive | arr_directive | label_directive;
+res_directive = ".res", ?Identifier?, type_directive, [ assignment ];
+type_directive = byte_directive | bytes_directive | arr_directive;
 byte_directive = ".byte";
-bytes_directive = ".bytes", TOKEN_NUMBER;
-arr_directive = ".arr", TOKEN_NUMBER, type_directive;
-label_directive = ".label";
-literal = TOKEN_NUMBER | TOKEN_STRING;
-literals = { literal };
-assignment = "{", literals, "}";
-def_directive = ".def", TOKEN_IDENTIFIER, type_directive, [ assignment ], "\n";
+bytes_directive = ".bytes", ?Number?;
+arr_directive = ".arr", number_literal, type_directive;
+assignment = "{", assignment_values, "}", [ assignment_repetition ];
+assignment_repetition = "*", [?Number?];
+assignment_values = { assignment_value };
+assignment_value = ?Number? | ?String? | assignment;
 
-instruction_argument = TOKEN_REGISTER | TOKEN_PORT | TOKEN_SYSTEM_REGISTER | literal | TOKEN_IDENTIFIER;
-instruction_arguments = { argument };
-condition_code = ":", TOKEN_CONDITION_CODE;
-instruction = TOKEN_INSTRUCTION, [ condition_code ], arguments, "\n";
+start_directive = ".start", ":";
 
-macro_argument = ;
-macro_arguments = ;
-macro = TOKEN_MACRO, [ condition_code ], arguments, "\n";
+label_directive = ?Identifier?, ":";
+
+instruction = ?TokenInstruction?, [ condition_code ], instruction_arguments;
+condition_code = ":", ?ConditionCode?;
+instruction_arguments = { instruction_argument };
+instruction_argument = ?Register? | ?SystemRegister? | ?Port? | ?Number? | ?String? | long_register;
+long_register = ?Register?, "~";
+
+macro = ?Macro?, [ condition_code ], macro_arguments;
+macro_arguments = { macro_argument };
+macro_argument = ?Register? | ?Number? | long_register | ?Identifier?;
+
+
