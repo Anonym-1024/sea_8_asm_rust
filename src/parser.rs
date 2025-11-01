@@ -132,10 +132,8 @@ fn parse_statement(tokens: &[Token], index: &mut usize, line: &mut i32) -> Parse
     
     let new_line_token = pop_token_if_lexeme(tokens, index, line, "\n");
     
-    if new_line_token.is_none() && let Some(t) = lookahead(tokens, *index, 0) {
+    if new_line_token.is_none() && let Some(t) = lookahead(tokens, *index, 0) && t.kind != TokenKind::Eof {
         return ParserResult::Err(ParserError::new(format!("Expected a new line after a statement, not {} ({} unterminated).", t.lexeme, child_node_desc).as_str(), *line));
-    } else if new_line_token.is_none() {
-        return ParserResult::Err(ParserError::new("Expected new line", *line))
     }
 
 

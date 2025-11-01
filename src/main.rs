@@ -24,7 +24,7 @@ fn main() {
     let start = Instant::now();
     
     let mut src = std::fs::read_to_string("resources/test.txt").expect("could not read");
-    src.push('\n');
+    
     let a = lexer::tokenise(src);
     
     
