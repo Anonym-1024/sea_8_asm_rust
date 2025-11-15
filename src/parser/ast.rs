@@ -2,12 +2,16 @@
 use crate::lexer::token;
 
 #[derive(Debug)]
+#[derive(PartialEq)]
+#[derive(Clone, Copy)]
 pub enum AstNodeKind {
     Terminal,
     File,
     Statements,
     Statement,
     ResDirective,
+    ImportDirective,
+    ExportDirective,
     TypeDirective,
     ByteDirective,
     BytesDirective,
@@ -18,20 +22,24 @@ pub enum AstNodeKind {
     AssignmentValue,
     StartDirective,
     LabelDirective,
+    LabelDefinition,
+    AutoScopePrefix,
+    LabelAccess, 
+    Scopes,
+    Scope,
     Instruction,
     ConditionCode,
     InstructionArguments,
     InstructionArgument,
-    LongRegister,
     Macro,
     MacroArguments,
     MacroArgument,
 }
 #[derive(Debug)]
 pub struct AstNode {
-    kind: AstNodeKind,
-    children: Vec<AstNode>,
-    terminal: Option<token::Token>
+    pub kind: AstNodeKind,
+    pub children: Vec<AstNode>,
+    pub terminal: Option<token::Token>
 }
 
 impl AstNode {
@@ -45,12 +53,19 @@ impl AstNode {
 
     pub fn kind_desc(&self) -> String {
         match self.kind {
-            AstNodeKind::Instruction => "instruction statement.".to_string(),
-            AstNodeKind::ResDirective => "reserve directive.".to_string(),
+            AstNodeKind::Instruction => "instruction statement".to_string(),
+            AstNodeKind::ResDirective => "reserve directive".to_string(),
+            AstNodeKind::ImportDirective => "import directive".to_string(),
+            AstNodeKind::ExportDirective => "export directive".to_string(),
             AstNodeKind::StartDirective => "start directive".to_string(),
             AstNodeKind::LabelDirective => "lebel directive".to_string(),
             AstNodeKind::Macro => "macro directive".to_string(),
             _ => "".to_string()
         }
+    }
+
+    pub fn child(&self, index: usize) -> &AstNode {
+        
+        &self.children[index]
     }
 }

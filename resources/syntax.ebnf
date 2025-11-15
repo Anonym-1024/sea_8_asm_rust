@@ -1,9 +1,22 @@
 file = statements, ?Eof?;
 
 statements = { statement };
-statement = ( res_directive | start_directive | label_directive | instruction | macro ), "\n";
+statement = ( import_directive | export_directive | res_directive | start_directive | label_directive | instruction | macro ), "\n";
 
-res_directive = ".res", ?Identifier?, type_directive, [ assignment ];
+label_definition = auto_scope_prefix, ?Identifier?;
+auto_scope_prefix = { ">" };
+
+label_access = auto_scope_prefix, scopes, ?Identifier?;
+scopes = { scope };
+scope = ?Identifier?, ">";
+
+label_external = scopes, ?Identifier?;
+
+import_directive = ".import", label_definition, label_external;
+
+export_directive = ".export", label_access, label_external;
+
+res_directive = ".res", label_definition, type_directive, [ assignment ];
 type_directive = byte_directive | bytes_directive | arr_directive;
 byte_directive = ".byte";
 bytes_directive = ".bytes", ?Number?;
@@ -15,16 +28,18 @@ assignment_value = ?Number? | ?String? | assignment;
 
 start_directive = ".start", ":";
 
-label_directive = ?Identifier?, ":";
+label_directive = label_definition, ":";
 
 instruction = ?TokenInstruction?, [ condition_code ], instruction_arguments;
 condition_code = ":", ?ConditionCode?;
 instruction_arguments = { instruction_argument };
-instruction_argument = ?Register? | ?SystemRegister? | ?Port? | ?Number? | ?String? | long_register;
-long_register = ?Register?, "~";
+instruction_argument = ?Register? | ?SystemRegister? | ?Port? | ?Number? | ?String? | ?LongRegister?;
+
 
 macro = ?Macro?, [ condition_code ], macro_arguments;
 macro_arguments = { macro_argument };
-macro_argument = ?Register? | ?Number? | long_register | ?Identifier?;
+macro_argument = ?Register? | ?Number? | ?LongRegister? | labe_access;
+
+
 
 

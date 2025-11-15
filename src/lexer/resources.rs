@@ -63,14 +63,17 @@ pub static MACRO_NAMES: [&str; 3] = [
 	"!bl",
 ];
 
-pub static DIRECTIVE_NAMES: [&str; 6] = [
+pub static DIRECTIVE_NAMES: [&str; 8] = [
     ".res",
 	".byte",
 	".bytes",
 	".arr",
 	".label",
-	".start"
+	".start",
+	".export",
+	".import"
 ];
+
 
 pub static REGISTER_NAMES: [&str; 16] = [
     "r0",
@@ -89,6 +92,25 @@ pub static REGISTER_NAMES: [&str; 16] = [
 	"r13",
 	"r14",
 	"r15"
+];
+
+pub static LONG_REGISTER_NAMES: [&str; 16] = [
+    "lr0",
+	"lr1",
+	"lr2",
+	"lr3",
+	"lr4",
+	"lr5",
+	"lr6",
+	"lr7",
+	"lr8",
+	"lr9",
+	"lr10",
+	"lr11",
+	"lr12",
+	"lr13",
+	"lr14",
+	"lr15"
 ];
 
 pub static PORT_NAMES: [&str; 8] = [

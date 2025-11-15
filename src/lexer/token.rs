@@ -7,6 +7,7 @@ pub enum TokenKind {
     Macro,
     Directive,
     Register,
+    LongRegister,
     Port,
     SystemRegister,
     ConditionCode,

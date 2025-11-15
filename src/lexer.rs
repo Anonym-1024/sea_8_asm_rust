@@ -1,19 +1,19 @@
 use token::{Token, TokenKind};
-use error::LexerError;
+use lexer_error::LexerError;
 
 
 
 pub mod token;
-pub mod error;
+pub mod lexer_error;
 pub mod resources;
 
 
 fn is_word_char(c: char) -> bool {
-    c.is_ascii_alphanumeric() || c == '_'
+    c.is_ascii_alphanumeric() || (c == '_')
 }
 
 fn is_punctation_character(c: char) -> bool {
-    (c == '{') || (c == '}') || (c == ':') || (c == '*') || (c == '~')
+    (c == '{') || (c == '}') || (c == ':') || (c == '*') || (c == '>')
 }
 
 
@@ -31,6 +31,8 @@ fn get_word_token_kind(lexeme: &str) -> TokenKind {
         TokenKind::Instruction
     } else if resources::REGISTER_NAMES.contains(&lexeme) {
         TokenKind::Register
+    } else if resources::LONG_REGISTER_NAMES.contains(&lexeme) {
+        TokenKind::LongRegister
     } else if resources::SYSTEM_REGISTER_NAMES.contains(&lexeme) {
         TokenKind::SystemRegister
     } else if resources::PORT_NAMES.contains(&lexeme) {
@@ -89,7 +91,7 @@ fn make_macro_token(chars: &[char], index: &mut usize, line: i32) -> Result<Toke
     if is_macro_name(&lexeme) {
         Ok(Token::new(TokenKind::Macro, lexeme, line))
     } else {
-        Err(LexerError::new(error::LexerErrorKind::InvalidMacro(lexeme), line))
+        Err(LexerError::new(lexer_error::LexerErrorKind::InvalidMacro(lexeme), line))
     }
 }
 
@@ -112,7 +114,7 @@ fn make_directive_token(chars: &[char], index: &mut usize, line: i32) -> Result<
     if is_directive_name(&lexeme) {
         Ok(Token::new(TokenKind::Directive, lexeme, line))
     } else {
-        Err(LexerError::new(error::LexerErrorKind::InvalidDirective(lexeme), line))
+        Err(LexerError::new(lexer_error::LexerErrorKind::InvalidDirective(lexeme), line))
     }
 }
 
@@ -158,7 +160,7 @@ fn make_number_lit_token(chars: &[char], index: &mut usize, line: i32) -> Result
     }
 
     if lexeme.len() == 2 {
-        return Err(LexerError::new(error::LexerErrorKind::InvalidNumberLit(lexeme), line));
+        return Err(LexerError::new(lexer_error::LexerErrorKind::InvalidNumberLit(lexeme), line));
     }
 
     Ok(Token::new(TokenKind::Number, lexeme, line))
@@ -181,13 +183,13 @@ fn make_string_lit_token(chars: &[char], index: &mut usize, line: i32) -> Result
 
     while *index < chars_c && chars[*index] != '"' {
         if !is_valid_string_char(chars[*index]) {
-            return Err(LexerError::new(error::LexerErrorKind::InvalidCharacterInString(chars[*index]), line));
+            return Err(LexerError::new(lexer_error::LexerErrorKind::InvalidCharacterInString(chars[*index]), line));
         }
         lexeme.push(chars[*index]);
         *index += 1;
     }
     if *index >= chars_c {
-        return Err(LexerError::new(error::LexerErrorKind::UnterminatedString, line));
+        return Err(LexerError::new(lexer_error::LexerErrorKind::UnterminatedString, line));
     }
 
     lexeme.push(chars[*index]);
@@ -196,6 +198,10 @@ fn make_string_lit_token(chars: &[char], index: &mut usize, line: i32) -> Result
 
     Ok(Token::new(TokenKind::String, lexeme, line))
 }
+
+
+
+
 
 
 
@@ -236,6 +242,10 @@ pub fn tokenise(src: String) -> Result<Vec<Token>, LexerError> {
             let new_string_token = make_string_lit_token(&chars, &mut index, line)?;
             tokens.push(new_string_token);
 
+        } else if is_punctation_character(char) {
+            tokens.push(Token::new(TokenKind::Punctuation, String::from(chars[index]), line));
+            index += 1;
+
         } else if char == '\n' { 
             tokens.push(Token::new(TokenKind::Punctuation, String::from("\n"), line));
             index += 1;
@@ -244,11 +254,8 @@ pub fn tokenise(src: String) -> Result<Vec<Token>, LexerError> {
         } else if char.is_ascii_whitespace() {
             index += 1;
 
-        } else if is_punctation_character(char) {
-            tokens.push(Token::new(TokenKind::Punctuation, String::from(chars[index]), line));
-            index += 1;
         } else {
-            return Err(LexerError::new(error::LexerErrorKind::UnknownSymbol(chars[index]), line));
+            return Err(LexerError::new(lexer_error::LexerErrorKind::UnknownSymbol(chars[index]), line));
         }
 
     }
